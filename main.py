@@ -1,6 +1,3 @@
-from connection import client
-from calculate_funding import calculate_funding, calculate_funding_quik
-import instruments_params
 import sys
 import threading
 from Database.database import Database
@@ -10,34 +7,6 @@ import time
 from get_cbr_prices import get_exchange_rates
 
 
-def main():
-    try:
-        while True:
-
-            weighted_average_price_USDRUBF = instruments_params.weighted_average_price_USDRUB
-            weighted_average_price_EURRUBF = instruments_params.weighted_average_price_EURRUB
-
-            cbr_price_USDRUBF = None
-            cbr_price_EURRUBF = None
-
-            funding_USDRUBF = calculate_funding_quik(
-                symbol=instruments_params.ticker_USDRUB,
-                weighted_average_price=weighted_average_price_USDRUBF,
-                cbr_price=cbr_price_USDRUBF,
-                K1=instruments_params.K1_USDRUB,
-                K2=instruments_params.K2_USDRUB
-            )
-
-            funding_EURRUBF = calculate_funding_quik(
-                symbol=instruments_params.ticker_EURRUB,
-                weighted_average_price=weighted_average_price_EURRUBF,
-                cbr_price=cbr_price_EURRUBF,
-                K1=instruments_params.K1_EURRUB,
-                K2=instruments_params.K2_EURRUB
-            )
-
-    except Exception as ex:
-        print(f"[ERROR] В функции main произошла ошибка: {ex}")
 
 
 

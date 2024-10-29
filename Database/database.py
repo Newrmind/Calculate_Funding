@@ -81,25 +81,6 @@ class Database:
                 conn.close()
 
 
-    def clear_order_book(self, time_to_del):
-        conn = None
-        cur = None
-        try:
-            conn = self.connect_to_database()
-            cur = conn.cursor()
-            delete_query = f"DELETE FROM order_book WHERE time < {time_to_del}"
-            cur.execute(delete_query)
-
-            conn.commit()
-            print("Table order_book was cleared.")
-
-        except Exception as e:
-            print(f"Error clear_order_book: {e}")
-        finally:
-            if cur is not None:
-                cur.close()
-            if conn is not None:
-                conn.close()
 
 
 

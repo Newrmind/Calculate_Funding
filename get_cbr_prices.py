@@ -4,11 +4,10 @@ import requests
 from datetime import datetime, timedelta
 import xml.etree.ElementTree as ET
 from Telegram_bot.send_message import TelegramSendMessage
-import json
+from Database.db_connection import db
+from time_functions import request_time_change
 
 
-def check_last_send_time():
-    pass
 
 def get_exchange_rates():
     tg = TelegramSendMessage()
@@ -63,6 +62,16 @@ def get_exchange_rates():
             message = "\n".join([f"{key}: {value}" for key, value in result.items()])
             print(result, time.time())
             tg.send_text_message(message, chat_id=chat_id)
+
+            def add_last_time_to_db():
+                last_time_message = int(time.time())
+                print(last_time_message)
+                request_time_change(db=db, request="cbr_prices_last_send")
+
+            add_last_time_to_db()
+
+
+
             return result
         else:
             if time.time() >= (last_time_message + 43200):
@@ -76,10 +85,7 @@ def get_exchange_rates():
                 data_str = "\n".join([f"{key}: {value}" for key, value in result.items()])
 
                 message = "[INFO] Завтрашних курсов ещё нет."
-                # tg.send_text_message(message, chat_id=chat_id)
                 print(message, time.time())
-                # print(data_str)
-                last_time_message = time.time()
                 return None
             else:
                 print("Сегодняшнее сообщение уже отправлено!")
@@ -93,4 +99,4 @@ def get_exchange_rates():
 if __name__ == "__main__":
     while True:
         get_exchange_rates()
-        time.sleep(5)
+        time.sleep(1)
