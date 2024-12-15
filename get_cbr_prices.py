@@ -61,7 +61,6 @@ def get_exchange_rates():
             }
             message = "\n".join([f"{key}: {value}" for key, value in result.items()])
             print(result, time.time())
-            tg.send_text_message(message, chat_id=chat_id)
 
             def add_last_time_to_db():
                 last_time_message = int(time.time())
@@ -70,9 +69,7 @@ def get_exchange_rates():
 
             add_last_time_to_db()
 
-
-
-            return result
+            return message
         else:
             if time.time() >= (last_time_message + 43200):
                 # Возвращаем None
@@ -97,6 +94,12 @@ def get_exchange_rates():
 
 
 if __name__ == "__main__":
-    while True:
-        get_exchange_rates()
-        time.sleep(1)
+    retries = 10
+    while retries > 0:
+        try:
+            get_exchange_rates()
+            time.sleep(5)
+        except Exception as e:
+            print(e)
+            time.sleep(1)
+            retries -= 1

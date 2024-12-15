@@ -53,3 +53,23 @@ def request_time_change(db, request: str):
 
     # Обновляем таблицу в базе данных
     db.add_table_to_db(requests_time, table_name='requests_time', if_exists='replace')
+
+
+# Функция для проверки времени и дня недели
+async def check_time():
+    """
+    Проверяет, что сейчас будний день, время между 15:30 и 18:45 по МСк и возвращает True при выполнении условия.
+    :return: Bool
+    """
+    msk = pytz.timezone('Europe/Moscow')
+    now = datetime.now(msk)
+
+    # Вывод текущей даты, времени и дня недели
+    print(f"Текущая дата и время по МСК: {now.strftime('%d-%m-%Y %H:%M:%S')} - {now.strftime('%A')}")
+
+    # Проверка времени и дня недели
+    if now.weekday() < 5 and (now.hour == 15 and now.minute >= 30 or
+                              (now.hour > 15 and now.hour < 18) or
+                              (now.hour == 18 and now.minute <= 45)):
+        return True
+    return False
