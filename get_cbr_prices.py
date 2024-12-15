@@ -11,7 +11,6 @@ from time_functions import request_time_change
 
 def get_exchange_rates():
     tg = TelegramSendMessage()
-    chat_id = 503034116
     last_time_message = 0
 
     # Получаем завтрашнюю дату
