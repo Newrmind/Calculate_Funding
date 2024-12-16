@@ -17,7 +17,7 @@ from jwt import decode
 from urllib3.exceptions import MaxRetryError  # Соединение с сервером не установлено за максимальное кол-во попыток подключения
 from websockets import connect, ConnectionClosed  # Работа с сервером WebSockets
 
-from connection import refresh_token  # Файл конфигурации
+# from connection import refresh_token  # Файл конфигурации
 
 
 # noinspection PyShadowingBuiltins
@@ -30,7 +30,7 @@ class AlorPy:
     exchanges = ('MOEX', 'SPBX',)  # Биржи
     logger = logging.getLogger('AlorPy')  # Будем вести лог
 
-    def __init__(self, refresh_token=refresh_token, demo=False):
+    def __init__(self, refresh_token, demo=False):
         """Инициализация
 
         :param str refresh_token: Токен

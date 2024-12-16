@@ -107,7 +107,7 @@ class CreateDatabase:
 
 if __name__ == "__main__":
     db = CreateDatabase()
-    db.create_database("funding")
+    db.create_database("Funding")
     db.create_table_requests_time()
     db.create_users_table()
 
