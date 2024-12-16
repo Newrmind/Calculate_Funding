@@ -16,7 +16,9 @@ def get_prevsettlerprice():
         prevsettleprice = row.get("PREVSETTLEPRICE")
         data_dict[secid] = float(prevsettleprice)
 
-    print(data_dict)
     return data_dict
 
-get_prevsettlerprice()
+if __name__ == "__main__":
+    usd = get_prevsettlerprice()
+    print(usd["USDRUBF"])
+

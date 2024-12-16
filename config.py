@@ -12,9 +12,4 @@ class Config:
         'port': connection.postgres_port
     }
 
-    request_metadata_period = 3600  # частота запроса метаданных в секундах
-    time_window = 15 * 60  # период для расчёта временного окна
-    trades_data_storage_time = 24 * 60 * 60
-
-    min_vol_usd = 1000  # Минимальный объём, ниже которого инструменты не рассматриваются
-    min_count_trades = 30
+    futures_params = {"USDRUBF": ["USD_RUB", 0.001, 0.001], "EURRUBF": ["EUR_RUB", 0.001, 0.001]}  # {"Тикер": ["Тикер_спота", K1, K2]}

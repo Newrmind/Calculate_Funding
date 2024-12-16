@@ -69,7 +69,31 @@ async def check_time():
 
     # Проверка времени и дня недели
     if now.weekday() < 5 and (now.hour == 15 and now.minute >= 30 or
-                              (now.hour > 15 and now.hour < 18) or
+                              (now.hour > 15 and now.hour < 21) or
                               (now.hour == 18 and now.minute <= 45)):
         return True
     return False
+
+
+def get_timestamps_for_funding():
+    """
+    Возвращает временные метки для расчёта фандинга.
+    """
+
+    now = datetime.now()
+    today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    timestamp_9am = int((today + timedelta(hours=9)).timestamp())
+    timestamp_330pm = int((today + timedelta(hours=15, minutes=30)).timestamp())
+
+    return timestamp_9am, timestamp_330pm
+
+
+
+
+
+if __name__ == "__main__":
+    # Пример использования
+    ts_9am, ts_330pm = get_timestamps_for_funding()
+    print("9:00 AM timestamp:", ts_9am)
+    print("3:30 PM timestamp:", ts_330pm)

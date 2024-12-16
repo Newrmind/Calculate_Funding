@@ -10,7 +10,6 @@ from time_functions import request_time_change
 
 
 def get_exchange_rates():
-    tg = TelegramSendMessage()
     last_time_message = 0
 
     # Получаем завтрашнюю дату
@@ -35,7 +34,6 @@ def get_exchange_rates():
         # Инициализируем переменные для хранения цен валют
         usd_rub = None
         eur_rub = None
-        cny_rub = None
 
         # Проходим по всем валютам в XML
         for valute in root.findall('Valute'):
@@ -46,8 +44,6 @@ def get_exchange_rates():
                 usd_rub = value
             elif code == 'EUR':
                 eur_rub = value
-            elif code == 'CNY':
-                cny_rub = value
 
         # Сравниваем date_attr_formatted и tomorrow_date
         if date_attr_formatted == tomorrow_date:
@@ -55,12 +51,8 @@ def get_exchange_rates():
             result = {
                 'Дата': date_attr_formatted,
                 'USD_RUB': usd_rub,
-                'EUR_RUB': eur_rub,
-                'CNY_RUB': cny_rub
+                'EUR_RUB': eur_rub
             }
-            message = "\n".join([f"{key}: {value}" for key, value in result.items()])
-            print(result, time.time())
-
             def add_last_time_to_db():
                 last_time_message = int(time.time())
                 print(last_time_message)
@@ -68,15 +60,14 @@ def get_exchange_rates():
 
             add_last_time_to_db()
 
-            return message
+            return result
         else:
             if time.time() >= (last_time_message + 43200):
                 # Возвращаем None
                 result = {
                     'Дата': date_attr_formatted,
                     'USD_RUB': usd_rub,
-                    'EUR_RUB': eur_rub,
-                    'CNY_RUB': cny_rub
+                    'EUR_RUB': eur_rub
                 }
                 data_str = "\n".join([f"{key}: {value}" for key, value in result.items()])
 
