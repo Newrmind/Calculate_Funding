@@ -3,9 +3,14 @@ from get_cbr_prices import get_exchange_rates
 from time_functions import check_time, request_time_change, is_time_in_range
 from Funding.calculate_funding import calculate_funding
 import asyncio
-from Database.db_connection import db
+from Database.db_connection import db, db_creator
 
 async def main():
+    # Создание базы данных
+    db_creator.create_database("funding")
+    db_creator.create_table_requests_time()
+    db_creator.create_users_table()
+
     # Запуск бота
     run_bot()
 
