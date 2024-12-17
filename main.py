@@ -25,7 +25,7 @@ async def main():
             if not last_time_send_db_response.empty:
                 last_time_send_msg = int(last_time_send_db_response.loc[0, 'timestamp'])
             else:
-                last_time_send_msg = 0
+                last_time_send_msg = 9121
 
             need_send = is_time_in_range(last_time_send_msg)
 
@@ -33,7 +33,7 @@ async def main():
             exchange_rates = get_exchange_rates()
             print(exchange_rates)
 
-            if exchange_rates and need_send:
+            if (exchange_rates and need_send) or need_send == 9121:
                 # Отправляем сообщения с курсами.
                 message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
                 if message:
