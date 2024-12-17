@@ -6,6 +6,7 @@ import asyncio
 from Database.db_connection import db, db_creator
 
 async def main():
+    print("[INFO] Запуск функции main()", flush=True)
     # Создание базы данных
     db_creator.create_database("funding")
     db_creator.create_table_requests_time()
@@ -16,7 +17,7 @@ async def main():
 
     while True:
         if await check_time():
-            print("Время считать фандинг.")
+            print("[INFO] Время расчёта фандинга.", flush=True)
 
             # Проверяем, было ли отправлено сегодня сообщение с курсами ЦБ.
             last_time_send_db_response = db.get_table_from_db("SELECT timestamp FROM requests_time \
@@ -48,7 +49,7 @@ async def main():
                         await send_to_all_users(funding_message)
 
         else:
-            print("Сейчас не время считать фандинг.")
+            print("[INFO] Сейчас не время расчёта фандинга.", flush=True)
 
         await asyncio.sleep(15)  # Ждем перед следующим запросом
 
