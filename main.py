@@ -24,8 +24,10 @@ async def main():
                                                  WHERE request = 'cbr_prices_last_send'")
             if not last_time_send_db_response.empty:
                 last_time_send_msg = int(last_time_send_db_response.loc[0, 'timestamp'])
+                print(last_time_send_msg)
             else:
                 last_time_send_msg = 9121
+                print(last_time_send_msg)
 
             need_send = is_time_in_range(last_time_send_msg)
 
@@ -33,7 +35,8 @@ async def main():
             exchange_rates = get_exchange_rates()
             print(exchange_rates)
 
-            if (exchange_rates and need_send) or need_send == 9121:
+            if (exchange_rates and need_send) or last_time_send_msg == 9121:
+                print("[INFO] Отправка сообщений", flush=True)
                 # Отправляем сообщения с курсами.
                 message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
                 if message:
