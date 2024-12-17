@@ -19,8 +19,13 @@ async def main():
             print("Время считать фандинг.")
 
             # Проверяем, было ли отправлено сегодня сообщение с курсами ЦБ.
-            last_time_send_msg = int(db.get_table_from_db("SELECT timestamp FROM requests_time \
-                                                 WHERE request = 'cbr_prices_last_send'").loc[0, 'timestamp'])
+            last_time_send_db_response = db.get_table_from_db("SELECT timestamp FROM requests_time \
+                                                 WHERE request = 'cbr_prices_last_send'")
+            if not last_time_send_db_response.empty:
+                last_time_send_msg = int(last_time_send_db_response.loc[0, 'timestamp'])
+            else:
+                last_time_send_msg = 0
+
             need_send = is_time_in_range(last_time_send_msg)
 
             # Запрашиваем курсы ЦБ
