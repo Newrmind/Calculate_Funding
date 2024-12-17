@@ -1,28 +1,36 @@
 from Telegram_bot.aiogram_bot import run_bot, send_to_all_users
 from get_cbr_prices import get_exchange_rates
-from time_functions import check_time
+from time_functions import check_time, request_time_change, is_time_in_range
 from Funding.calculate_funding import calculate_funding
 import asyncio
+from Database.db_connection import db
 
 async def main():
-    # Запуск бота в отдельном потоке
+    # Запуск бота
     run_bot()
 
-
-    # Периодический запуск get_exchange_rates
     while True:
         if await check_time():
             print("Время считать фандинг.")
+
+            # Проверяем, было ли отправлено сегодня сообщение с курсами ЦБ.
+            last_time_send_msg = int(db.get_table_from_db("SELECT timestamp FROM requests_time \
+                                                 WHERE request = 'cbr_prices_last_send'").loc[0, 'timestamp'])
+            need_send = is_time_in_range(last_time_send_msg)
+
+            # Запрашиваем курсы ЦБ
             exchange_rates = get_exchange_rates()
+            print(exchange_rates)
 
-            message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
-            if message:
-                await send_to_all_users(message)
+            if exchange_rates and need_send:
+                # Отправляем сообщения с курсами.
+                message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
+                if message:
+                    await send_to_all_users(message)
+                    # Записываем время отправки сообщения
+                    request_time_change(db=db, request="cbr_prices_last_send")
 
-            if exchange_rates:
-                """Рассчитываем фандинг."""
-                print(exchange_rates)
-
+                # Рассчитываем фандинг.
                 tickers = ['USDRUBF', "EURRUBF"]
                 for ticker in tickers:
                     funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
@@ -30,9 +38,9 @@ async def main():
                         await send_to_all_users(funding_message)
 
         else:
-            print("Сейчас выходной или вечерняя сессия.")
+            print("Сейчас не время считать фандинг.")
 
-        await asyncio.sleep(5)  # Ждем перед следующим запросом
+        await asyncio.sleep(15)  # Ждем перед следующим запросом
 
 if __name__ == "__main__":
     asyncio.run(main())  # Запуск основной функции

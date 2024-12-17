@@ -22,17 +22,20 @@ def calculate_funding(symbol, cbr_prices, K1=None, K2=None, previous_price=None,
     if not K2:
         K2 = Config.futures_params[symbol][2]
 
-    spot_symbol = Config.futures_params[symbol][0]
-    cbr_price = float(cbr_prices[spot_symbol].replace(',', '.'))
+    if previous_price and weighted_average_price:
+        spot_symbol = Config.futures_params[symbol][0]
+        cbr_price = float(cbr_prices[spot_symbol].replace(',', '.'))
 
-    D = weighted_average_price - cbr_price
+        D = weighted_average_price - cbr_price
 
-    L1 = K1 * previous_price
-    L2 = K2 * previous_price
-    Funding = min(L2, max(-L2, (min(-L1, D) + max(L1, D))))
-    funding_message = f'Фандинг по {symbol}: {round(Funding, 4)} ({(round(Funding*1000, 2))} рублей на лот)'
-    print(funding_message)
-    return funding_message
+        L1 = K1 * previous_price
+        L2 = K2 * previous_price
+        Funding = min(L2, max(-L2, (min(-L1, D) + max(L1, D))))
+        funding_message = f'Фандинг по {symbol}: {round(Funding, 4)} ({(round(Funding*1000, 2))} рублей на лот)'
+        print(funding_message)
+        return funding_message
+    else:
+        return None
 
 
 if __name__ == "__main__":

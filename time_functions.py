@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pytz
 import time
 import pandas as pd
@@ -69,8 +69,8 @@ async def check_time():
 
     # Проверка времени и дня недели
     if now.weekday() < 5 and (now.hour == 15 and now.minute >= 30 or
-                              (now.hour > 15 and now.hour < 21) or
-                              (now.hour == 18 and now.minute <= 45)):
+                              (now.hour > 15 and now.hour < 23) or
+                              (now.hour == 23 and now.minute <= 45)):
         return True
     return False
 
@@ -89,11 +89,32 @@ def get_timestamps_for_funding():
     return timestamp_9am, timestamp_330pm
 
 
+def is_time_in_range(timestamp_ms):
+    # Устанавливаем московский часовой пояс
+    moscow_tz = timezone(timedelta(hours=3))
+
+    # Преобразуем timestamp в объект datetime
+    timestamp = datetime.fromtimestamp(timestamp_ms / 1000, tz=moscow_tz)
+
+    # Текущая дата в московском времени
+    now = datetime.now(moscow_tz)
+    today_start = datetime(now.year, now.month, now.day, tzinfo=moscow_tz)
+
+    # Проверяем, является ли текущий день выходным (суббота или воскресенье)
+    if today_start.weekday() in (5, 6):  # 5 = суббота, 6 = воскресенье
+        return False
+
+    # Время 15:30 и 23:00 на текущий день
+    start_time = today_start.replace(hour=15, minute=30)
+    end_time = today_start.replace(hour=23, minute=0)
+
+    # Проверяем, попадает ли время в диапазон
+    return start_time <= timestamp <= end_time
+
+
 
 
 
 if __name__ == "__main__":
-    # Пример использования
-    ts_9am, ts_330pm = get_timestamps_for_funding()
-    print("9:00 AM timestamp:", ts_9am)
-    print("3:30 PM timestamp:", ts_330pm)
+    x = is_time_in_range(1734438600000)
+    print(x)
