@@ -44,7 +44,7 @@ async def main():
                 tickers = ['USDRUBF', "EURRUBF"]
                 for ticker in tickers:
                     funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
-                    if message:
+                    if funding_message:
                         await send_to_all_users(funding_message)
 
         else:
