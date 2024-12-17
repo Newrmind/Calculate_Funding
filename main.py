@@ -27,7 +27,7 @@ async def main():
                 print(last_time_send_msg)
             else:
                 last_time_send_msg = 9121
-                print(last_time_send_msg)
+                print(f"last_time_send_msg: {last_time_send_msg}")
 
             need_send = is_time_in_range(last_time_send_msg)
 
@@ -39,6 +39,7 @@ async def main():
                 print("[INFO] Отправка сообщений", flush=True)
                 # Отправляем сообщения с курсами.
                 message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
+                print(message)
                 if message:
                     await send_to_all_users(message)
                     # Записываем время отправки сообщения
