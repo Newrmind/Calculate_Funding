@@ -22,27 +22,28 @@ class CreateDatabase:
         conn = None
         cur = None
 
-        # Соединяемся с сервером PostgreSQL
         try:
-
+            # Подключаемся к серверу PostgreSQL
             conn = self.connect_to_database(dbname='postgres')
-            conn.autocommit = True  # Включаем autocommit для создания базы данных
-
-            # Создаем курсор для выполнения команд
+            conn.autocommit = True
             cur = conn.cursor()
 
-            # Создаем запрос на создание базы данных
-            create_db_query = sql.SQL("CREATE DATABASE {} ENCODING 'UTF8' TEMPLATE template0").format(
-                sql.Identifier(dbname)
-            )
+            # Проверяем, существует ли база данных
+            cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (dbname,))
+            db_exists = cur.fetchone()
 
-            # Выполняем запрос на создание базы данных
-            cur.execute(create_db_query)
-
-            print(f"Database {dbname} created successfully.")
+            if not db_exists:
+                # Создаём базу данных, если она не существует
+                create_db_query = sql.SQL(
+                    "CREATE DATABASE {} ENCODING 'UTF8' TEMPLATE template0"
+                ).format(sql.Identifier(dbname))
+                cur.execute(create_db_query)
+                print(f"[INFO] База данных {dbname} успешно создана.")
+            else:
+                print(f"[INFO] База данных {dbname} уже существует.")
 
         except Exception as e:
-            print(f"Error creating Database {dbname}: {e}")
+            print(f"[ERROR] Ошибка создания базы данных {dbname}: {e}")
 
         finally:
             # Закрываем курсор и соединение
@@ -68,9 +69,9 @@ class CreateDatabase:
             cur = conn.cursor()
             cur.execute(query)
             conn.commit()
-            print("Table created successfully.")
+            print("[INFO] Таблица requests_time успешно создана.")
         except Exception as e:
-            print(f"Error creating table: {e}")
+            print(f"[ERROR] Ошибка при создании таблицы requests_time: {e}")
         finally:
             if cur:
                 cur.close()
@@ -95,9 +96,9 @@ class CreateDatabase:
             cur = conn.cursor()
             cur.execute(query)
             conn.commit()
-            print("Table created successfully.")
+            print("[INFO] Таблица users успешно создана.")
         except Exception as e:
-            print(f"Error creating table: {e}")
+            print(f"[ERROR] Ошибка при создании таблицы users: {e}")
         finally:
             if cur:
                 cur.close()
@@ -107,7 +108,7 @@ class CreateDatabase:
 
 if __name__ == "__main__":
     db = CreateDatabase()
-    db.create_database("Funding")
+    db.create_database("funding")
     db.create_table_requests_time()
     db.create_users_table()
 

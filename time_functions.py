@@ -65,7 +65,7 @@ async def check_time():
     now = datetime.now(msk)
 
     # Вывод текущей даты, времени и дня недели
-    print(f"Текущая дата и время по МСК: {now.strftime('%d-%m-%Y %H:%M:%S')} - {now.strftime('%A')}")
+    print(f"[INFO] Текущая дата и время по МСК: {now.strftime('%d-%m-%Y %H:%M:%S')} - {now.strftime('%A')}")
 
     # Проверка времени и дня недели
     if now.weekday() < 5 and (now.hour == 15 and now.minute >= 30 or
@@ -90,6 +90,12 @@ def get_timestamps_for_funding():
 
 
 def is_time_in_range(timestamp_ms):
+    """
+    Функция для проверки на то, что сообщение с фандингом или валютными курсами сегодня ещё не отправлялось
+
+    :param timestamp_ms: int
+    :return: bool
+    """
     # Устанавливаем московский часовой пояс
     moscow_tz = timezone(timedelta(hours=3))
 
@@ -109,12 +115,12 @@ def is_time_in_range(timestamp_ms):
     end_time = today_start.replace(hour=23, minute=0)
 
     # Проверяем, попадает ли время в диапазон
-    return start_time <= timestamp <= end_time
+    return not start_time <= timestamp <= end_time
 
 
 
 
 
 if __name__ == "__main__":
-    x = is_time_in_range(1734438600000)
+    x = is_time_in_range(9888)
     print(x)

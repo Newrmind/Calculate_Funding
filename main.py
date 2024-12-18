@@ -24,33 +24,50 @@ async def main():
                                                  WHERE request = 'cbr_prices_last_send'")
             if not last_time_send_db_response.empty:
                 last_time_send_msg = int(last_time_send_db_response.loc[0, 'timestamp'])
-                print(last_time_send_msg)
             else:
-                last_time_send_msg = 9121
-                print(f"last_time_send_msg: {last_time_send_msg}")
+                last_time_send_msg = 999
 
-            need_send = is_time_in_range(last_time_send_msg)
+            last_time_send_funding = db.get_table_from_db("SELECT timestamp FROM requests_time \
+                                                             WHERE request = 'funding_last_send'")
+
+            if not last_time_send_funding.empty:
+                last_time_send_funding = int(last_time_send_funding.loc[0, 'timestamp'])
+            else:
+                last_time_send_funding = 999
+
+            print(f"[INFO] last_time_send_msg: {last_time_send_msg}", flush=True)
+            need_send_exchange_rates = is_time_in_range(last_time_send_msg)
+            print(f"[INFO] need_send_exchange_rates: {need_send_exchange_rates}", flush=True)
+
+            print(f"[INFO] last_time_send_funding: {last_time_send_funding}", flush=True)
+            need_send_funding = is_time_in_range(last_time_send_funding)
+            print(f"[INFO] need_send_exchange_rates: {need_send_funding}", flush=True)
 
             # Запрашиваем курсы ЦБ
-            exchange_rates = get_exchange_rates()
-            print(exchange_rates)
+            if need_send_exchange_rates or need_send_funding:
+                exchange_rates = get_exchange_rates()
+                print(f"[INFO] exchange_rates: {exchange_rates}")
 
-            if (exchange_rates and need_send) or last_time_send_msg == 9121:
-                print("[INFO] Отправка сообщений", flush=True)
-                # Отправляем сообщения с курсами.
-                message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
-                print(message)
-                if message:
-                    await send_to_all_users(message)
-                    # Записываем время отправки сообщения
-                    request_time_change(db=db, request="cbr_prices_last_send")
+                if need_send_exchange_rates:
+                    print("[INFO] Отправка сообщений с курсами валют.", flush=True)
+                    # Отправляем сообщения с курсами.
+                    message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
+                    print(message)
+                    if message:
+                        await send_to_all_users(message)
+                        # Записываем время отправки сообщения
+                        request_time_change(db=db, request="cbr_prices_last_send")
 
                 # Рассчитываем фандинг.
                 tickers = ['USDRUBF', "EURRUBF"]
-                for ticker in tickers:
-                    funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
-                    if funding_message:
-                        await send_to_all_users(funding_message)
+                if need_send_funding:
+                    print("[INFO] Отправка сообщений с фандингом.", flush=True)
+                    for ticker in tickers:
+                        funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
+                        if funding_message:
+                            await send_to_all_users(funding_message)
+                            # Записываем время отправки сообщения
+                            request_time_change(db=db, request="funding_last_send")
 
         else:
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)
