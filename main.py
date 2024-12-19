@@ -48,26 +48,26 @@ async def main():
                 exchange_rates = get_exchange_rates()
                 print(f"[INFO] exchange_rates: {exchange_rates}")
 
-                if need_send_exchange_rates:
+                if need_send_exchange_rates and exchange_rates:
                     print("[INFO] Отправка сообщений с курсами валют.", flush=True)
                     # Отправляем сообщения с курсами.
+
                     message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
                     print(message)
-                    if message:
-                        await send_to_all_users(message)
-                        # Записываем время отправки сообщения
-                        request_time_change(db=db, request="cbr_prices_last_send")
+                    await send_to_all_users(message)
+                    # Записываем время отправки сообщения
+                    request_time_change(db=db, request="cbr_prices_last_send")
 
-                # Рассчитываем фандинг.
-                tickers = ['USDRUBF', "EURRUBF"]
-                if need_send_funding:
-                    print("[INFO] Отправка сообщений с фандингом.", flush=True)
-                    for ticker in tickers:
-                        funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
-                        if funding_message:
-                            await send_to_all_users(funding_message)
-                            # Записываем время отправки сообщения
-                            request_time_change(db=db, request="funding_last_send")
+                    # Рассчитываем фандинг.
+                    tickers = ['USDRUBF', "EURRUBF"]
+                    if need_send_funding:
+                        print("[INFO] Отправка сообщений с фандингом.", flush=True)
+                        for ticker in tickers:
+                            funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
+                            if funding_message:
+                                await send_to_all_users(funding_message)
+                                # Записываем время отправки сообщения
+                                request_time_change(db=db, request="funding_last_send")
 
         else:
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)
