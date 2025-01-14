@@ -65,5 +65,6 @@ def get_exchange_rates():
             retries -= 1
 
 if __name__ == "__main__":
-    pass
+    exchange_rates = get_exchange_rates()
+    print(exchange_rates)
 

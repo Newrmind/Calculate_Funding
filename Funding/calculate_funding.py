@@ -40,11 +40,10 @@ def calculate_funding(symbol, cbr_prices, K1=None, K2=None, previous_price=None,
 
 
 if __name__ == "__main__":
-    tickers = ['USDRUBF', "EURRUBF"]
-    cbr_prices = {'Дата': '17/12/2024', 'USD_RUB': '102,9125', 'EUR_RUB': '108,7016'}
-    for ticker in tickers:
-        calculate_funding(symbol=ticker, cbr_prices=cbr_prices)
-
+    symbols = ["USDRUBF", "EURRUBF"]
+    cbr_prices = {'Дата': '15/01/2025', 'USD_RUB': '103,4380', 'EUR_RUB': '106,2493'}
+    for symbol in symbols:
+        calculate_funding(symbol=symbol, cbr_prices=cbr_prices)
 
 
 

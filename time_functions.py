@@ -75,14 +75,24 @@ async def check_time():
     return False
 
 
+from datetime import datetime, timedelta
+import pytz
+
+
 def get_timestamps_for_funding():
     """
     Возвращает временные метки для расчёта фандинга.
     """
+    # Указываем часовой пояс для Москвы
+    moscow_tz = pytz.timezone('Europe/Moscow')
 
-    now = datetime.now()
+    # Получаем текущее время в Московском часовом поясе
+    now = datetime.now(moscow_tz)
+
+    # Начало текущего дня в Московском времени
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
+    # Временные метки для 9:00 и 15:30
     timestamp_9am = int((today + timedelta(hours=9)).timestamp())
     timestamp_330pm = int((today + timedelta(hours=15, minutes=30)).timestamp())
 
