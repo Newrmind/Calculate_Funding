@@ -52,7 +52,9 @@ async def main():
                     print("[INFO] Отправка сообщений с курсами валют.", flush=True)
                     # Отправляем сообщения с курсами.
 
-                    message = "\n".join([f"{key}: {value}" for key, value in exchange_rates.items()])
+                    message = f"{list(exchange_rates.keys())[0]} {exchange_rates['Курсы ЦБ на']}:\n" + \
+                              "\n".join([f"{key}: {value}" for key, value in exchange_rates.items() if
+                                         key != 'Курсы ЦБ на']) + "\n"
                     print(message)
                     await send_to_all_users(message)
                     # Записываем время отправки сообщения

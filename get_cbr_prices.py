@@ -28,6 +28,7 @@ def get_exchange_rates():
 
                 # Преобразуем date_attr в формат DD/MM/YYYY
                 date_attr_formatted = datetime.strptime(date_attr, '%d.%m.%Y').strftime('%d/%m/%Y')
+                print(date_attr_formatted)
 
                 # Инициализируем переменные для хранения цен валют
                 usd_rub = None
@@ -47,7 +48,7 @@ def get_exchange_rates():
                 if date_attr_formatted == tomorrow_date:
                     # Возвращаем значения всех переменных
                     result = {
-                        'Дата': date_attr_formatted,
+                        'Курсы ЦБ на': date_attr_formatted,
                         'USD_RUB': usd_rub,
                         'EUR_RUB': eur_rub
                     }
