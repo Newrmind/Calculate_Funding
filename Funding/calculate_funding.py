@@ -43,7 +43,8 @@ if __name__ == "__main__":
     symbols = ["USDRUBF", "EURRUBF"]
     cbr_prices = {'Дата': '15/01/2025', 'USD_RUB': '103,4380', 'EUR_RUB': '106,2493'}
     for symbol in symbols:
-        calculate_funding(symbol=symbol, cbr_prices=cbr_prices)
+        msg = calculate_funding(symbol=symbol, cbr_prices=cbr_prices)
+        print(msg)
 
 
 

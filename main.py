@@ -58,16 +58,17 @@ async def main():
                     # Записываем время отправки сообщения
                     request_time_change(db=db, request="cbr_prices_last_send")
 
-                    # Рассчитываем фандинг.
-                    tickers = ['USDRUBF', "EURRUBF"]
-                    if need_send_funding:
-                        print("[INFO] Отправка сообщений с фандингом.", flush=True)
-                        for ticker in tickers:
-                            funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
-                            if funding_message:
-                                await send_to_all_users(funding_message)
-                                # Записываем время отправки сообщения
-                                request_time_change(db=db, request="funding_last_send")
+                # Рассчитываем фандинг.
+                tickers = ['USDRUBF', "EURRUBF"]
+                if need_send_funding and exchange_rates:
+                    print("[INFO] Отправка сообщений с фандингом.", flush=True)
+                    for ticker in tickers:
+                        funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
+                        if funding_message:
+                            await send_to_all_users(funding_message)
+
+                    # Записываем время отправки сообщения
+                    request_time_change(db=db, request="funding_last_send")
 
         else:
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)

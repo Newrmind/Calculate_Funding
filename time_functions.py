@@ -75,10 +75,6 @@ async def check_time():
     return False
 
 
-from datetime import datetime, timedelta
-import pytz
-
-
 def get_timestamps_for_funding():
     """
     Возвращает временные метки для расчёта фандинга.

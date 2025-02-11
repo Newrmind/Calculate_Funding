@@ -40,9 +40,9 @@ if __name__ == "__main__":
     # Пример вызова функции
     symbol = "USDRUBF"
 
-    seconds_from = 1734328800
-    seconds_to = 1734328800
-    weighted_avg_price = weighted_avg_price(symbol, seconds_from=seconds_from, seconds_to=seconds_to)
+    # seconds_from = 1734328800
+    # seconds_to = 1734328800
+    weighted_avg_price = weighted_avg_price(symbol)
 
     print(f"weighted_avg_price = {weighted_avg_price}")
 
