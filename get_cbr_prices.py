@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 
 def get_exchange_rates():
-    retries = 10
+    retries = 200
     while retries > 0:
         try:
 
@@ -69,3 +69,7 @@ if __name__ == "__main__":
     exchange_rates = get_exchange_rates()
     print(exchange_rates)
 
+    while True:
+        exchange_rates = get_exchange_rates()
+        print(exchange_rates)
+        time.sleep(5)
