@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 def get_prevsettlerprice():
     url = "https://iss.moex.com/iss/engines/futures/markets/forts/securities?securities=USDRUBF,EURRUBF,CNYRUBF,GLDRUBF,IMOEXF&iss.meta=on&iss.only=securities&securities.columns=SECID,PREVSETTLEPRICE"
 
-    retries = 10
+    retries = 200
     while retries > 0:
         try:
             response = requests.request('GET', url)

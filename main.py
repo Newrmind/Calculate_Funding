@@ -4,6 +4,8 @@ from time_functions import check_time, request_time_change, is_time_in_range
 from Funding.calculate_funding import calculate_funding
 import asyncio
 from Database.db_connection import db, db_creator
+from datetime import datetime
+
 
 async def main():
     print("[INFO] Запуск функции main()", flush=True)
@@ -35,13 +37,13 @@ async def main():
             else:
                 last_time_send_funding = 999
 
-            print(f"[INFO] last_time_send_msg: {last_time_send_msg}", flush=True)
+            print(f"[INFO] last_time_send_msg: {datetime.fromtimestamp(int(last_time_send_msg/1000))}", flush=True)
             need_send_exchange_rates = is_time_in_range(last_time_send_msg)
             print(f"[INFO] need_send_exchange_rates: {need_send_exchange_rates}", flush=True)
 
-            print(f"[INFO] last_time_send_funding: {last_time_send_funding}", flush=True)
+            print(f"[INFO] last_time_send_funding: {datetime.fromtimestamp(int(last_time_send_funding/1000))}", flush=True)
             need_send_funding = is_time_in_range(last_time_send_funding)
-            print(f"[INFO] need_send_exchange_rates: {need_send_funding}", flush=True)
+            print(f"[INFO] need_send_funding: {need_send_funding}", flush=True)
 
             # Запрашиваем курсы ЦБ
             if need_send_exchange_rates or need_send_funding:
