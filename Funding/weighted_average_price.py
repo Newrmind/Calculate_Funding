@@ -4,7 +4,7 @@ from time_functions import get_timestamps_for_funding
 import time
 
 
-def weighted_avg_price(symbol,exchange="MOEX", seconds_from=None, seconds_to=None):
+def weighted_avg_price(symbol, exchange="MOEX", seconds_from=None, seconds_to=None):
     if not seconds_from or not seconds_to:
         seconds_from, seconds_to = get_timestamps_for_funding()
 
@@ -47,12 +47,13 @@ def weighted_avg_price(symbol,exchange="MOEX", seconds_from=None, seconds_to=Non
 
 if __name__ == "__main__":
     # Пример вызова функции
-    symbol = "USDRUBF"
+    symbols = ["USDRUBF", "EURRUBF", ]
 
     # seconds_from = 1734328800
     # seconds_to = 1734328800
 
-    weighted_avg_price = weighted_avg_price(symbol)
-    print(f"weighted_avg_price = {weighted_avg_price}")
+    for symbol in symbols:
+        wap = weighted_avg_price(symbol=symbol)
+        print(f"weighted_avg_price {symbol}: {wap}")
 
 

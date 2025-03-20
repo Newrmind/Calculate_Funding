@@ -77,7 +77,7 @@ async def main():
         else:
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)
 
-        await asyncio.sleep(15)  # Ждем перед следующим запросом
+        await asyncio.sleep(1)  # Ждем перед следующим запросом
 
 if __name__ == "__main__":
     asyncio.run(main())  # Запуск основной функции
