@@ -12,4 +12,4 @@ class Config:
         'port': connection.postgres_port
     }
 
-    futures_params = {"USDRUBF": ["USD_RUB", 0.001, 0.001], "EURRUBF": ["EUR_RUB", 0.001, 0.001]}  # {"Тикер": ["Тикер_спота", K1, K2]}
+    futures_params = {"USDRUBF": ["USD_RUB", 0.001, 0.0015], "EURRUBF": ["EUR_RUB", 0.001, 0.0015]}  # {"Тикер": ["Тикер_спота", K1, K2]}

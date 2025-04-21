@@ -6,6 +6,7 @@ class TelegramSendMessage:
 
     def __init__(self, bot_token: str = bot_token):
         self.bot_token = bot_token
+        self.tg_group_id = None
 
     def send_text_message(self, message_text, chat_id=None):
         print("[INFO] Запуск функции send_message.send_text_message")
