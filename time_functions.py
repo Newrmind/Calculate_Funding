@@ -89,7 +89,7 @@ def get_timestamps_for_funding():
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
     # Временные метки для 9:00 и 15:30
-    timestamp_9am = int((today + timedelta(hours=9)).timestamp())
+    timestamp_9am = int((today + timedelta(hours=10)).timestamp())
     timestamp_330pm = int((today + timedelta(hours=15, minutes=30)).timestamp())
 
     return timestamp_9am, timestamp_330pm
