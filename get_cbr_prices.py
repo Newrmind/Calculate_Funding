@@ -55,7 +55,7 @@ def get_exchange_rates():
                     }
 
                     today = date.today()
-                    expire_date = date(2025, 6, 19)
+                    expire_date = date(Config.EXPIRE_DATE['Y'], Config.EXPIRE_DATE['M'], Config.EXPIRE_DATE['D'])
 
                     if Config.CNY_RUB_FIX and today == expire_date:
                         result['CNY_RUB_FIX'] = Config.CNY_RUB_FIX
