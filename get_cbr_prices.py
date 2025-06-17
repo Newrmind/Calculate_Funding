@@ -1,7 +1,8 @@
 import time
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import xml.etree.ElementTree as ET
+from config import Config
 
 
 
@@ -53,6 +54,12 @@ def get_exchange_rates():
                         'EUR_USD': round((eur_rub / usd_rub), 4)
                     }
 
+                    today = date.today()
+                    expire_date = date(2025, 6, 19)
+
+                    if Config.CNY_RUB_FIX and today == expire_date:
+                        result['CNY_RUB_FIX'] = Config.CNY_RUB_FIX
+                        result['USD_CNY'] = round(result['USD_RUB'] / result['CNY_RUB_FIX'], 4)
                     return result
                 else:
                     # Возвращаем None

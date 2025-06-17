@@ -13,3 +13,5 @@ class Config:
     }
 
     futures_params = {"USDRUBF": ["USD_RUB", 0.001, 0.0015], "EURRUBF": ["EUR_RUB", 0.001, 0.0015]}  # {"Тикер": ["Тикер_спота", K1, K2]}
+
+    CNY_RUB_FIX = None
