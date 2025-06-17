@@ -1,3 +1,4 @@
+import asyncio
 import pandas as pd
 from connection import alor_client
 from time_functions import get_timestamps_for_funding
@@ -44,6 +45,29 @@ def weighted_avg_price(symbol, exchange="MOEX", seconds_from=None, seconds_to=No
             time.sleep(15)
             retries -= 1
 
+
+async def calculate_and_save_weighted_avg_price(symbol):
+    """
+    Пока время в диапазоне от 10:00 до 15:30
+    каждые 5 минут рассчитывает средневзвешенную цену
+    и сохраняет в таблицу weighted_prices (timestamp, symbol, wap).
+    """
+
+    seconds_from, seconds_to = get_timestamps_for_funding()
+
+    while True:
+        now = int(time.time())
+        if now <= seconds_to:
+            print("Текущее время больше 15:30")
+
+            # 2) Посчитать WAP
+            # 3) Сохранить в базу
+            # ждём 5 минут до следующего расчёта
+            await asyncio.sleep(5 * 60)
+        else:
+            # если вышли за пределы, ждём до 10:00 следующего дня
+            # можно спать, например, минуту и перепроверять
+            await asyncio.sleep(60)
 
 if __name__ == "__main__":
     # Пример вызова функции

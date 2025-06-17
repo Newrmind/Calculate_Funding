@@ -23,7 +23,6 @@ def get_exchange_rates():
             if response.status_code == 200:
                 # Парсим XML
                 root = ET.fromstring(response.content)
-
                 date_attr = root.attrib['Date']
 
                 # Преобразуем date_attr в формат DD/MM/YYYY
@@ -40,9 +39,9 @@ def get_exchange_rates():
                     value = valute.find('Value').text
 
                     if code == 'USD':
-                        usd_rub = value
+                        usd_rub = float(value.replace(',', '.'))
                     elif code == 'EUR':
-                        eur_rub = value
+                        eur_rub = float(value.replace(',', '.'))
 
                 # Сравниваем date_attr_formatted и tomorrow_date
                 if date_attr_formatted == tomorrow_date:
@@ -50,7 +49,8 @@ def get_exchange_rates():
                     result = {
                         'Курсы ЦБ на': date_attr_formatted,
                         'USD_RUB': usd_rub,
-                        'EUR_RUB': eur_rub
+                        'EUR_RUB': eur_rub,
+                        'EUR_USD': round((eur_rub / usd_rub), 4)
                     }
 
                     return result

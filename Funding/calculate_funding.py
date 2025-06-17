@@ -1,4 +1,3 @@
-import get_cbr_prices
 from config import Config
 from Funding.moex_data_request import get_prevsettlerprice
 from Funding.weighted_average_price import weighted_avg_price
@@ -25,7 +24,7 @@ def calculate_funding(symbol, cbr_prices, K1=None, K2=None, previous_price=None,
 
     if previous_price and weighted_average_price:
         spot_symbol = Config.futures_params[symbol][0]
-        cbr_price = float(cbr_prices[spot_symbol].replace(',', '.'))
+        cbr_price = cbr_prices[spot_symbol]
 
         D = weighted_average_price - cbr_price
 
@@ -42,8 +41,8 @@ def calculate_funding(symbol, cbr_prices, K1=None, K2=None, previous_price=None,
 
 if __name__ == "__main__":
     symbols = ["USDRUBF", "EURRUBF"]
-    # cbr_prices = {'Дата': '15/01/2025', 'USD_RUB': '103,4380', 'EUR_RUB': '106,2493'}
-    cbr_prices = get_cbr_prices.get_exchange_rates()
+    cbr_prices = {'Курсы ЦБ на': '18/06/2025', 'USD_RUB': 78.7135, 'EUR_RUB': 90.7548, 'EUR_USD': 1.15298}
+    # cbr_prices = get_cbr_prices.get_exchange_rates()
     for symbol in symbols:
         msg = calculate_funding(symbol=symbol, cbr_prices=cbr_prices)
         print(msg)

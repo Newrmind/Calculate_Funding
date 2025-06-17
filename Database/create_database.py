@@ -105,6 +105,34 @@ class CreateDatabase:
             if conn:
                 conn.close()
 
+    def create_weighted_avg_price_table(self):
+        conn = None
+        cur = None
+
+        query = """
+                    CREATE TABLE IF NOT EXISTS weighted_avg_prices (
+                    user_id BIGINT PRIMARY KEY,
+                    username TEXT,
+                    created_date DATE DEFAULT CURRENT_DATE,
+                    created_time TIME DEFAULT CURRENT_TIMESTAMP
+                    );
+                """
+
+        try:
+            conn = self.connect_to_database()
+            cur = conn.cursor()
+            cur.execute(query)
+            conn.commit()
+            print("[INFO] Таблица weighted_avg_prices успешно создана.")
+        except Exception as e:
+            print(f"[ERROR] Ошибка при создании таблицы weighted_avg_prices: {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+
 
 if __name__ == "__main__":
     db = CreateDatabase()

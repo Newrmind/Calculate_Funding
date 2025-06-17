@@ -77,7 +77,8 @@ async def check_time():
 
 def get_timestamps_for_funding():
     """
-    Возвращает временные метки для расчёта фандинга.
+    Возвращает временные метки для расчёта фандинга в секундах.
+    Пример: (1745391600, 1745411400)
     """
     # Указываем часовой пояс для Москвы
     moscow_tz = pytz.timezone('Europe/Moscow')
@@ -89,10 +90,10 @@ def get_timestamps_for_funding():
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
     # Временные метки для 9:00 и 15:30
-    timestamp_9am = int((today + timedelta(hours=10)).timestamp())
+    timestamp_10am = int((today + timedelta(hours=10)).timestamp())
     timestamp_330pm = int((today + timedelta(hours=15, minutes=30)).timestamp())
 
-    return timestamp_9am, timestamp_330pm
+    return timestamp_10am, timestamp_330pm
 
 
 def is_time_in_range(timestamp_ms):
@@ -128,5 +129,4 @@ def is_time_in_range(timestamp_ms):
 
 
 if __name__ == "__main__":
-    x = is_time_in_range(9888)
-    print(x)
+    print(get_timestamps_for_funding())

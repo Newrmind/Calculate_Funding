@@ -7,12 +7,16 @@ from Database.db_connection import db, db_creator
 from datetime import datetime
 
 
-async def main():
-    print("[INFO] Запуск функции main()", flush=True)
+def init():
+    print("[INFO] Запуск функции init()", flush=True)
     # Создание базы данных
     db_creator.create_database("funding")
     db_creator.create_table_requests_time()
     db_creator.create_users_table()
+
+
+async def main():
+    print("[INFO] Запуск функции main()", flush=True)
 
     # Запуск бота
     run_bot()
@@ -80,4 +84,5 @@ async def main():
         await asyncio.sleep(1)  # Ждем перед следующим запросом
 
 if __name__ == "__main__":
+    init()
     asyncio.run(main())  # Запуск основной функции
