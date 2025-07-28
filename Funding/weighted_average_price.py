@@ -1,8 +1,8 @@
-import asyncio
 import pandas as pd
 from connection import alor_client
-from time_functions import get_timestamps_for_funding
+from time_functions import get_timestamps_for_funding, is_avg_price_check_time, is_time_multiple_of
 import time
+from Funding.data_storage import data_storage
 
 
 def weighted_avg_price(symbol, exchange="MOEX", seconds_from=None, seconds_to=None):
@@ -46,38 +46,52 @@ def weighted_avg_price(symbol, exchange="MOEX", seconds_from=None, seconds_to=No
             retries -= 1
 
 
-async def calculate_and_save_weighted_avg_price(symbol):
+def calculate_and_save_weighted_avg_price(symbols):
     """
-    Пока время в диапазоне от 10:00 до 15:30
-    каждые 5 минут рассчитывает средневзвешенную цену
-    и сохраняет в таблицу weighted_prices (timestamp, symbol, wap).
+    Пока время в диапазоне от 10:00 до 15:30 каждые 5 минут рассчитывает средневзвешенную цену.
     """
 
-    seconds_from, seconds_to = get_timestamps_for_funding()
-
-    while True:
-        now = int(time.time())
-        if now <= seconds_to:
-            print("Текущее время больше 15:30")
-
-            # 2) Посчитать WAP
-            # 3) Сохранить в базу
-            # ждём 5 минут до следующего расчёта
-            await asyncio.sleep(5 * 60)
-        else:
-            # если вышли за пределы, ждём до 10:00 следующего дня
-            # можно спать, например, минуту и перепроверять
-            await asyncio.sleep(60)
-
-if __name__ == "__main__":
-    # Пример вызова функции
-    symbols = ["USDRUBF", "EURRUBF", ]
-
-    # seconds_from = 1734328800
-    # seconds_to = 1734328800
+    if not is_avg_price_check_time():
+        return
 
     for symbol in symbols:
-        wap = weighted_avg_price(symbol=symbol)
-        print(f"weighted_avg_price {symbol}: {wap}")
+        need_calc_avg = False
+        now = int(time.time())
+
+        data = data_storage.get(symbol)
+
+        if not data:
+            need_calc_avg = True
+        else:
+            timestamp_10am, timestamp_330pm = get_timestamps_for_funding()
+            if timestamp_10am < now <= timestamp_330pm and is_time_multiple_of(5) and now - data["timestamp"] > 250:
+                need_calc_avg = True
+
+        if need_calc_avg:
+            wap = float(weighted_avg_price(symbol=symbol))
+            data_storage.set({"symbol": symbol, "avg_price": wap})
+            print(data_storage.get(symbol))
+
+
+if __name__ == "__main__":
+    symbols = ["USDRUBF", "EURRUBF", ]
+
+    def get_avg():
+        # Пример вызова функции
+        # seconds_from = 1734328800
+        # seconds_to = 1734328800
+
+        for symbol in symbols:
+            wap = weighted_avg_price(symbol=symbol)
+            print(f"weighted_avg_price {symbol}: {wap}")
+
+    # get_avg()
+
+    def save_avg():
+        while True:
+            calculate_and_save_weighted_avg_price(symbols)
+            time.sleep(1)
+
+    save_avg()
 
 

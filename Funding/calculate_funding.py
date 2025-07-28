@@ -31,9 +31,12 @@ def calculate_funding(symbol, cbr_prices, K1=None, K2=None, previous_price=None,
         L1 = K1 * previous_price
         L2 = K2 * previous_price
         Funding = min(L2, max(-L2, (min(-L1, D) + max(L1, D))))
-        funding_message = (f'Фандинг по {symbol}: {round(Funding, 4)} ({(round(Funding*1000, 2))} рублей на лот.\n'
-                           f'Средневзвешенная цена: {round(weighted_average_price, 6)})')
-        print("funding_message", funding_message)
+        funding_message = (
+            f"💰 *Фандинг по {symbol}*\n"
+            f"• Средневзвешенная цена: *{weighted_average_price:.6f}*\n"
+            f"• Фандинг: *{Funding:.4f}* ({Funding * 1000:.2f} ₽ на лот)\n"
+        )
+        print(funding_message)
         return funding_message
     else:
         return None
@@ -45,7 +48,6 @@ if __name__ == "__main__":
     # cbr_prices = get_cbr_prices.get_exchange_rates()
     for symbol in symbols:
         msg = calculate_funding(symbol=symbol, cbr_prices=cbr_prices)
-        print(msg)
 
 
 

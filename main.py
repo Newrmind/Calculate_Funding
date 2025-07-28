@@ -1,7 +1,9 @@
 from Telegram_bot.aiogram_bot import run_bot, send_to_all_users
-from get_cbr_prices import get_exchange_rates
+from Funding.get_cbr_prices import get_exchange_rates, format_exchange_rates_message
 from time_functions import check_time, request_time_change, is_time_in_range
 from Funding.calculate_funding import calculate_funding
+from Funding.weighted_average_price import calculate_and_save_weighted_avg_price
+from Funding.data_storage import data_storage
 import asyncio
 from Database.db_connection import db, db_creator
 from datetime import datetime
@@ -52,26 +54,26 @@ async def main():
             # Запрашиваем курсы ЦБ
             if need_send_exchange_rates or need_send_funding:
                 exchange_rates = get_exchange_rates()
+                exchange_rates_message = format_exchange_rates_message(exchange_rates)
                 print(f"[INFO] exchange_rates: {exchange_rates}")
 
                 if need_send_exchange_rates and exchange_rates:
                     print("[INFO] Отправка сообщений с курсами валют.", flush=True)
                     # Отправляем сообщения с курсами.
-
-                    message = f"{list(exchange_rates.keys())[0]} {exchange_rates['Курсы ЦБ на']}:\n" + \
-                              "\n".join([f"{key}: {value}" for key, value in exchange_rates.items() if
-                                         key != 'Курсы ЦБ на']) + "\n"
-                    print(message)
-                    await send_to_all_users(message)
+                    print(exchange_rates_message)
+                    await send_to_all_users(exchange_rates_message, parse_mode="HTML")
                     # Записываем время отправки сообщения
                     request_time_change(db=db, request="cbr_prices_last_send")
 
                 # Рассчитываем фандинг.
                 tickers = ['USDRUBF', "EURRUBF"]
+                calculate_and_save_weighted_avg_price(tickers)
                 if need_send_funding and exchange_rates:
                     print("[INFO] Отправка сообщений с фандингом.", flush=True)
                     for ticker in tickers:
-                        funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates)
+                        data = data_storage.get(ticker)
+                        funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates,
+                                                            weighted_average_price=data['avg_price'])
                         if funding_message:
                             await send_to_all_users(funding_message)
 

@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timedelta, date
 import xml.etree.ElementTree as ET
 from config import Config
-
+from html import escape
 
 
 def get_exchange_rates():
@@ -72,11 +72,24 @@ def get_exchange_rates():
             time.sleep(15)
             retries -= 1
 
+
+
+def format_exchange_rates_message(exchange_rates: dict) -> str:
+    date = exchange_rates.get("Курсы ЦБ на", "неизвестно")
+    message = f"<b>💱 Курсы ЦБ на {escape(date)}</b>\n\n"
+
+    for key, value in exchange_rates.items():
+        if key == "Курсы ЦБ на":
+            continue
+        message += f"• <b>{escape(key)}</b>: {escape(str(value))}\n"
+
+    return message
+
+
 if __name__ == "__main__":
     exchange_rates = get_exchange_rates()
     print(exchange_rates)
 
-    while True:
-        exchange_rates = get_exchange_rates()
-        print(exchange_rates)
-        time.sleep(5)
+
+    mes = format_exchange_rates_message(exchange_rates)
+    print(mes)

@@ -15,6 +15,7 @@ postgres_dbname = os.getenv('postgres_dbname')
 postgres_port = os.getenv('postgres_port')
 
 bot_token = os.getenv('bot_token')
+tg_admin_id = int(os.getenv('tg_admin_id'))
 
 alor_client = AlorPy(refresh_token=refresh_token)
 
