@@ -48,7 +48,7 @@ def weighted_avg_price(symbol, exchange="MOEX", seconds_from=None, seconds_to=No
 
 def calculate_and_save_weighted_avg_price(symbols):
     """
-    Пока время в диапазоне от 10:00 до 15:30 каждые 5 минут рассчитывает средневзвешенную цену.
+    Пока время в диапазоне от 10:00 до 15:50 каждые 5 минут рассчитывает средневзвешенную цену.
     """
 
     if not is_avg_price_check_time():
@@ -64,7 +64,7 @@ def calculate_and_save_weighted_avg_price(symbols):
             need_calc_avg = True
         else:
             timestamp_10am, timestamp_330pm = get_timestamps_for_funding()
-            if timestamp_10am < now <= timestamp_330pm and is_time_multiple_of(5) and now - data["timestamp"] > 250:
+            if timestamp_10am < now <= timestamp_330pm + 1200 and is_time_multiple_of(5) and now - data["timestamp"] > 250:
                 need_calc_avg = True
 
         if need_calc_avg:

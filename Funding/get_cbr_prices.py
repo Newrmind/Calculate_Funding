@@ -76,7 +76,7 @@ def get_exchange_rates():
 
 def format_exchange_rates_message(exchange_rates: dict) -> str:
     date = exchange_rates.get("Курсы ЦБ на", "неизвестно")
-    message = f"<b>💱 Курсы ЦБ на {escape(date)}</b>\n\n"
+    message = f"<b>💲 Курсы ЦБ на {escape(date)}</b>\n\n"
 
     for key, value in exchange_rates.items():
         if key == "Курсы ЦБ на":

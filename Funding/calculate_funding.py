@@ -34,7 +34,7 @@ def calculate_funding(symbol, cbr_prices, K1=None, K2=None, previous_price=None,
         funding_message = (
             f"💰 *Фандинг по {symbol}*\n"
             f"• Средневзвешенная цена: *{weighted_average_price:.6f}*\n"
-            f"• Фандинг: *{Funding:.4f}* ({Funding * 1000:.2f} ₽ на лот)\n"
+            f"• Фандинг: *{Funding:.4f}* ({Funding * 1000:.2f} ₽ на лот)\n\n"
         )
         print(funding_message)
         return funding_message

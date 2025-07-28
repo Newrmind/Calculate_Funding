@@ -1,4 +1,4 @@
-from Telegram_bot.aiogram_bot import run_bot, send_to_all_users
+from Telegram_bot.aiogram_bot import run_bot, send_to_all_users, send_to_admin
 from Funding.get_cbr_prices import get_exchange_rates, format_exchange_rates_message
 from time_functions import check_time, request_time_change, is_time_in_range
 from Funding.calculate_funding import calculate_funding
@@ -68,17 +68,30 @@ async def main():
                 # Рассчитываем фандинг.
                 tickers = ['USDRUBF', "EURRUBF"]
                 calculate_and_save_weighted_avg_price(tickers)
+
                 if need_send_funding and exchange_rates:
+                    any_funding_sent = False
                     print("[INFO] Отправка сообщений с фандингом.", flush=True)
+                    funding_message_union = ""
                     for ticker in tickers:
                         data = data_storage.get(ticker)
-                        funding_message = calculate_funding(symbol=ticker, cbr_prices=exchange_rates,
+                        avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
+                        print(avg_price_actual)
+                        if not avg_price_actual:
+                            warning_msg = f"[WARNING] Нет средневзвешенной цены, рассчитанной после 15:30."
+                            print(warning_msg)
+                            await send_to_admin(message=warning_msg)
+                            continue
+
+                        funding_message_union += calculate_funding(symbol=ticker, cbr_prices=exchange_rates,
                                                             weighted_average_price=data['avg_price'])
-                        if funding_message:
-                            await send_to_all_users(funding_message)
+                    if funding_message_union:
+                        await send_to_all_users(funding_message_union)
+                        any_funding_sent = True
 
                     # Записываем время отправки сообщения
-                    request_time_change(db=db, request="funding_last_send")
+                    if any_funding_sent:
+                        request_time_change(db=db, request="funding_last_send")
 
         else:
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)

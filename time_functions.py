@@ -120,11 +120,13 @@ def get_timestamps_for_funding():
     return timestamp_10am, timestamp_330pm
 
 
-def is_time_in_range(timestamp_ms):
+def is_time_in_range(timestamp_ms, start: tuple = None, end: tuple = None):
     """
     Функция для проверки на то, что сообщение с фандингом или валютными курсами сегодня ещё не отправлялось
 
     :param timestamp_ms: int
+    :param start: tuple
+    :param end: tuple
     :return: bool
     """
     # Устанавливаем московский часовой пояс
@@ -141,9 +143,14 @@ def is_time_in_range(timestamp_ms):
     if today_start.weekday() in (5, 6):  # 5 = суббота, 6 = воскресенье
         return False
 
-    # Время 15:30 и 23:00 на текущий день
-    start_time = today_start.replace(hour=15, minute=30)
-    end_time = today_start.replace(hour=23, minute=0)
+    if not start and not end:
+        # Время 15:30 и 23:00 на текущий день
+        start_time = today_start.replace(hour=15, minute=30)
+        end_time = today_start.replace(hour=23, minute=0)
+    else:
+        start_time = today_start.replace(hour=start[0], minute=start[1])
+        end_time = today_start.replace(hour=end[0], minute=end[1])
+        print(start_time, end_time)
 
     # Проверяем, попадает ли время в диапазон
     return not start_time <= timestamp <= end_time
@@ -166,6 +173,7 @@ def timestamp_to_time(timestamp: int) -> str:
     return dt.strftime("%d-%m-%y %H:%M")
 
 
-
 if __name__ == "__main__":
-    print(timestamp_to_time(1753714908))
+    now = int(time.time()*1000)
+    x = not is_time_in_range(now, start=(15, 30), end=(23, 59))
+    print(x)
