@@ -59,10 +59,12 @@ async def main():
             # Запрашиваем курсы ЦБ
             if need_send_exchange_rates or need_send_funding:
                 exchange_rates = get_exchange_rates()
-                exchange_rates_message = format_exchange_rates_message(exchange_rates)
-                print(f"[INFO] exchange_rates: {exchange_rates}")
+                exchange_rates_message = None
+                if exchange_rates:
+                    exchange_rates_message = format_exchange_rates_message(exchange_rates)
+                    print(f"[INFO] exchange_rates: {exchange_rates}")
 
-                if need_send_exchange_rates and exchange_rates:
+                if need_send_exchange_rates and exchange_rates_message:
                     print("[INFO] Отправка сообщений с курсами валют.", flush=True)
                     # Отправляем сообщения с курсами.
                     print(exchange_rates_message)
