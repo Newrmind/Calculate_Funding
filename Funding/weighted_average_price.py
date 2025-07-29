@@ -52,6 +52,7 @@ def calculate_and_save_weighted_avg_price(symbols):
     """
 
     if not is_avg_price_check_time():
+        print("[INFO] Сейчас не время расчёта средневзвешенной.")
         return
 
     for symbol in symbols:
@@ -68,6 +69,7 @@ def calculate_and_save_weighted_avg_price(symbols):
                 need_calc_avg = True
 
         if need_calc_avg:
+            print("[INFO] Производится расчёт средневзвешенной.")
             wap = float(weighted_avg_price(symbol=symbol))
             data_storage.set({"symbol": symbol, "avg_price": wap})
             print(data_storage.get(symbol))

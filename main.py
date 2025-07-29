@@ -24,6 +24,9 @@ async def main():
     run_bot()
 
     while True:
+        tickers = ['USDRUBF', "EURRUBF"]
+        calculate_and_save_weighted_avg_price(tickers)
+
         if await check_time():
             print("[INFO] Время расчёта фандинга.", flush=True)
 
@@ -51,6 +54,8 @@ async def main():
             need_send_funding = is_time_in_range(last_time_send_funding)
             print(f"[INFO] need_send_funding: {need_send_funding}", flush=True)
 
+
+
             # Запрашиваем курсы ЦБ
             if need_send_exchange_rates or need_send_funding:
                 exchange_rates = get_exchange_rates()
@@ -65,10 +70,10 @@ async def main():
                     # Записываем время отправки сообщения
                     request_time_change(db=db, request="cbr_prices_last_send")
 
-                # Рассчитываем фандинг.
-                tickers = ['USDRUBF', "EURRUBF"]
-                calculate_and_save_weighted_avg_price(tickers)
 
+
+
+                # Рассчитываем фандинг.
                 if need_send_funding and exchange_rates:
                     any_funding_sent = False
                     print("[INFO] Отправка сообщений с фандингом.", flush=True)
