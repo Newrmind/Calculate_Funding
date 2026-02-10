@@ -1,4 +1,4 @@
-from Telegram_bot.aiogram_bot import run_bot, send_to_all_users, send_to_admin
+from Telegram_bot.aiogram_bot import start_bot, send_to_all_users, send_to_admin
 from Funding.get_cbr_prices import get_exchange_rates, format_exchange_rates_message
 from time_functions import check_time, request_time_change, is_time_in_range
 from Funding.calculate_funding import calculate_funding
@@ -17,11 +17,8 @@ def init():
     db_creator.create_users_table()
 
 
-async def main():
-    print("[INFO] Запуск функции main()", flush=True)
-
-    # Запуск бота
-    run_bot()
+async def main_loop():
+    print("[INFO] Запуск функции main_loop()", flush=True)
 
     while True:
         tickers = ['USDRUBF', "EURRUBF"]
@@ -101,6 +98,17 @@ async def main():
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)
 
         await asyncio.sleep(1)  # Ждем перед следующим запросом
+
+
+async def main():
+    print("[INFO] Запуск функции main()", flush=True)
+
+    # Запускаем бота и основной цикл ПАРАЛЛЕЛЬНО
+    bot_task = asyncio.create_task(start_bot())
+    loop_task = asyncio.create_task(main_loop())
+
+    # Ждём завершения обеих задач (на практике — никогда не завершатся)
+    await asyncio.gather(bot_task, loop_task)
 
 if __name__ == "__main__":
     init()

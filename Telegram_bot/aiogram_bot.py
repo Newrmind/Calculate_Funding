@@ -147,7 +147,3 @@ async def start_bot():
     await dp.start_polling(bot)
 
 
-# Функция для вызова start_bot() в существующем цикле событий
-def run_bot():
-    asyncio.get_event_loop().create_task(start_bot())  # Создаем задачу для асинхронного запуска
-
