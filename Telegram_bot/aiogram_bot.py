@@ -145,5 +145,6 @@ async def send_to_admin(message: str):
 async def start_bot():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+    await send_to_admin("[INFO] Бот успешно запущен.")
 
 
