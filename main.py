@@ -72,9 +72,6 @@ async def main():
                     # Записываем время отправки сообщения
                     request_time_change(db=db, request="cbr_prices_last_send")
 
-
-
-
                 # Рассчитываем фандинг.
                 if need_send_funding and exchange_rates:
                     any_funding_sent = False
