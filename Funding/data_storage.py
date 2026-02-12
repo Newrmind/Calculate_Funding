@@ -8,6 +8,8 @@ class DataStorage:
         Универсальное хранилище данных по финансовым инструментам с возможностью
         хранения дополнительных параметров.
         """
+        import os
+        print(f"[DATA_STORAGE] Создан экземпляр ID={id(self)} в PID={os.getpid()}", flush=True)
         self._storage: Dict[str, Dict[str, Any]] = {}
 
     def set(self, data: Dict[str, Any]):
@@ -18,6 +20,7 @@ class DataStorage:
                      Остальные ключи будут добавлены в хранилище.
         :raises ValueError: Если данные не соответствуют формату
         """
+        print(f"[DATA_STORAGE.set] ID={id(self)} сохраняет: {data.get('symbol')}", flush=True)
         if not isinstance(data, dict):
             raise ValueError("Data must be a dictionary")
         if 'symbol' not in data:

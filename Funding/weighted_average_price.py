@@ -72,6 +72,7 @@ def calculate_and_save_weighted_avg_price(symbols):
             print("[INFO] Производится расчёт средневзвешенной.")
             wap = float(weighted_avg_price(symbol=symbol))
             data_storage.set({"symbol": symbol, "avg_price": wap})
+            print(f"[DEBUG] data_storage ID в weighted_average_price.py: {id(data_storage)}", flush=True)
             print(data_storage.get(symbol))
 
 

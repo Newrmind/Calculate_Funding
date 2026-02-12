@@ -23,6 +23,8 @@ async def main_loop():
     print("[INFO] Ожидание 3 секунд для инициализации бота...", flush=True)
     await asyncio.sleep(3)
 
+    print(f"[DEBUG] data_storage ID в main.py: {id(data_storage)}", flush=True)
+
     iteration = 0
 
     while True:
@@ -98,6 +100,13 @@ async def main_loop():
                             print(f"[CRITICAL] ТАЙМАУТ при получении данных для {ticker}!", flush=True)
                             continue
                         print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
+
+                        if data is None:
+                            warning_msg = f"[CRITICAL] Нет данных для тикера {ticker} в data_storage!"
+                            print(warning_msg, flush=True)
+                            await send_to_admin(warning_msg)
+                            continue
+
                         avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
                         print(f"[DEBUG] avg_price_actual: {avg_price_actual}.")
                         if not avg_price_actual:
