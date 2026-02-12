@@ -78,9 +78,11 @@ async def main_loop():
                     print("[INFO] Отправка сообщений с фандингом.", flush=True)
                     funding_message_union = ""
                     for ticker in tickers:
+                        print("[DEBUG] Обращение к data_storage.get(ticker)")
                         data = data_storage.get(ticker)
+                        print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
                         avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
-                        print(avg_price_actual)
+                        print(f"[DEBUG] avg_price_actual: {avg_price_actual}.")
                         if not avg_price_actual:
                             warning_msg = f"[WARNING] Нет средневзвешенной цены, рассчитанной после 15:30."
                             print(warning_msg)
@@ -110,7 +112,6 @@ async def main():
     bot_task = asyncio.create_task(start_bot())
     loop_task = asyncio.create_task(main_loop())
 
-    # Ждём завершения обеих задач (на практике — никогда не завершатся)
     await asyncio.gather(bot_task, loop_task)
 
 if __name__ == "__main__":
