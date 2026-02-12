@@ -82,9 +82,21 @@ async def main_loop():
                     any_funding_sent = False
                     print("[INFO] Отправка сообщений с фандингом.", flush=True)
                     funding_message_union = ""
+                    print("[DEBUG] Перед входом в цикл фандинга", flush=True)
+                    print(f"[DEBUG] data_storage state: {hasattr(data_storage, '_data')}", flush=True)
                     for ticker in tickers:
-                        print("[DEBUG] Обращение к data_storage.get(ticker)")
-                        data = data_storage.get(ticker)
+                        print(f"[DEBUG] Обработка тикера: {ticker}", flush=True)
+                        print(
+                            f"[DEBUG] data_storage content keys: {list(data_storage._data.keys()) if hasattr(data_storage, '_data') else 'NO DATA'}",
+                            flush=True)
+                        try:
+                            data = await asyncio.wait_for(
+                                asyncio.to_thread(data_storage.get, ticker),  # если метод синхронный
+                                timeout=2.0
+                            )
+                        except asyncio.TimeoutError:
+                            print(f"[CRITICAL] ТАЙМАУТ при получении данных для {ticker}!", flush=True)
+                            continue
                         print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
                         avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
                         print(f"[DEBUG] avg_price_actual: {avg_price_actual}.")
