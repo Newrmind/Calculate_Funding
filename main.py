@@ -1,3 +1,4 @@
+# main.py
 from Telegram_bot.aiogram_bot import start_bot, send_to_all_users, send_to_admin
 from Funding.get_cbr_prices import get_exchange_rates, format_exchange_rates_message
 from time_functions import check_time, request_time_change, is_time_in_range
@@ -89,6 +90,7 @@ async def main_loop():
                         print(f"[DEBUG] data_storage keys: {list(data_storage._storage.keys())}", flush=True)
                         print(f"[DEBUG] data_storage content: {data_storage._storage}", flush=True)
                         for ticker in tickers:
+                            print(f"[STEP] before get {ticker}", flush=True)
                             data = data_storage.get(ticker)
 
                             print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
