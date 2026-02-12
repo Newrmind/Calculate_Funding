@@ -20,11 +20,11 @@ async def handle_start(message: Message):
     username = message.from_user.username or "Unknown"
 
     try:
-        db.add_user(user_id=user_id, username=username)
+        await asyncio.to_thread(db.add_user, user_id=user_id, username=username)
         await message.answer(f"Привет, {username}! Вы подписаны на сообщения.")
     except Exception as e:
-        await message.answer("Произошла ошибка при добавлении вас в базу данных.")
-        print(f"Ошибка: {e}")
+        await message.answer("Произошла ошибка, попробуйте позже.")
+        print(f"Ошибка: {e}", flush=True)
 
 @dp.message(Command('help'))
 async def handle_start(message: Message):
@@ -137,7 +137,7 @@ async def send_to_admin(message: str):
 # Функция для запуска бота
 async def start_bot():
     await bot.delete_webhook(drop_pending_updates=True)
+    asyncio.create_task(send_to_admin("[INFO] Бот успешно запущен."))
     await dp.start_polling(bot)
-    await send_to_admin("[INFO] Бот успешно запущен.")
 
 
