@@ -23,7 +23,12 @@ async def main_loop():
     print("[INFO] Ожидание 3 секунд для инициализации бота...", flush=True)
     await asyncio.sleep(3)
 
+    iteration = 0
+
     while True:
+        iteration += 1
+        print(f"[DEBUG] Итерация цикла #{iteration}", flush=True)
+
         tickers = ['USDRUBF', "EURRUBF"]
         calculate_and_save_weighted_avg_price(tickers)
 
