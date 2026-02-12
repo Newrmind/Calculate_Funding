@@ -85,20 +85,11 @@ async def main_loop():
                     print("[INFO] Отправка сообщений с фандингом.", flush=True)
                     funding_message_union = ""
                     print("[DEBUG] Перед входом в цикл фандинга", flush=True)
-                    print(f"[DEBUG] data_storage state: {hasattr(data_storage, '_data')}", flush=True)
+                    print(f"[DEBUG] data_storage keys: {list(data_storage._storage.keys())}", flush=True)
+                    print(f"[DEBUG] data_storage content: {data_storage._storage}", flush=True)
                     for ticker in tickers:
-                        print(f"[DEBUG] Обработка тикера: {ticker}", flush=True)
-                        print(
-                            f"[DEBUG] data_storage content keys: {list(data_storage._data.keys()) if hasattr(data_storage, '_data') else 'NO DATA'}",
-                            flush=True)
-                        try:
-                            data = await asyncio.wait_for(
-                                asyncio.to_thread(data_storage.get, ticker),  # если метод синхронный
-                                timeout=2.0
-                            )
-                        except asyncio.TimeoutError:
-                            print(f"[CRITICAL] ТАЙМАУТ при получении данных для {ticker}!", flush=True)
-                            continue
+                        data = data_storage.get(ticker)
+
                         print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
 
                         if data is None:
