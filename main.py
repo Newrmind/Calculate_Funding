@@ -80,41 +80,48 @@ async def main_loop():
                     request_time_change(db=db, request="cbr_prices_last_send")
 
                 # Рассчитываем фандинг.
-                if need_send_funding and exchange_rates:
-                    any_funding_sent = False
-                    print("[INFO] Отправка сообщений с фандингом.", flush=True)
-                    funding_message_union = ""
-                    print("[DEBUG] Перед входом в цикл фандинга", flush=True)
-                    print(f"[DEBUG] data_storage keys: {list(data_storage._storage.keys())}", flush=True)
-                    print(f"[DEBUG] data_storage content: {data_storage._storage}", flush=True)
-                    for ticker in tickers:
-                        data = data_storage.get(ticker)
+                try:
+                    if need_send_funding and exchange_rates:
+                        any_funding_sent = False
+                        print("[INFO] Отправка сообщений с фандингом.", flush=True)
+                        funding_message_union = ""
+                        print("[DEBUG] Перед входом в цикл фандинга", flush=True)
+                        print(f"[DEBUG] data_storage keys: {list(data_storage._storage.keys())}", flush=True)
+                        print(f"[DEBUG] data_storage content: {data_storage._storage}", flush=True)
+                        for ticker in tickers:
+                            data = data_storage.get(ticker)
 
-                        print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
+                            print(f"[DEBUG] Получены данные от к data_storage.get(ticker): {data}")
 
-                        if data is None:
-                            warning_msg = f"[CRITICAL] Нет данных для тикера {ticker} в data_storage!"
-                            print(warning_msg, flush=True)
-                            await send_to_admin(warning_msg)
-                            continue
+                            if data is None:
+                                warning_msg = f"[CRITICAL] Нет данных для тикера {ticker} в data_storage!"
+                                print(warning_msg, flush=True)
+                                await send_to_admin(warning_msg)
+                                continue
 
-                        avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
-                        print(f"[DEBUG] avg_price_actual: {avg_price_actual}.")
-                        if not avg_price_actual:
-                            warning_msg = f"[WARNING] Нет средневзвешенной цены, рассчитанной после 15:30."
-                            print(warning_msg)
-                            await send_to_admin(message=warning_msg)
-                            continue
+                            avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
+                            print(f"[DEBUG] avg_price_actual: {avg_price_actual}.")
+                            if not avg_price_actual:
+                                warning_msg = f"[WARNING] Нет средневзвешенной цены, рассчитанной после 15:30."
+                                print(warning_msg)
+                                await send_to_admin(message=warning_msg)
+                                continue
 
-                        funding_message_union += calculate_funding(symbol=ticker, cbr_prices=exchange_rates,
-                                                            weighted_average_price=data['avg_price'])
-                    if funding_message_union:
-                        await send_to_all_users(funding_message_union)
-                        any_funding_sent = True
+                            funding_message_union += calculate_funding(symbol=ticker, cbr_prices=exchange_rates,
+                                                                weighted_average_price=data['avg_price'])
+                        if funding_message_union:
+                            await send_to_all_users(funding_message_union)
+                            any_funding_sent = True
 
-                    # Записываем время отправки сообщения
-                    if any_funding_sent:
-                        request_time_change(db=db, request="funding_last_send")
+                        # Записываем время отправки сообщения
+                        if any_funding_sent:
+                            request_time_change(db=db, request="funding_last_send")
+
+                except Exception as e:
+                    import traceback
+                    error_msg = f"[CRITICAL] Исключение в блоке фандинга: {type(e).__name__}: {e}\n{traceback.format_exc()}"
+                    print(error_msg, flush=True)
+                    await send_to_admin(error_msg)
 
         else:
             print("[INFO] Сейчас не время расчёта фандинга.", flush=True)
