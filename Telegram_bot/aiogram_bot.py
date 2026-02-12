@@ -134,13 +134,6 @@ async def send_to_admin(message: str):
         print(f"[ERROR] Ошибка при отправке сообщения админу {tg_admin_id}: {e}")
 
 
-async def send_to_admin(message: str):
-    try:
-        await bot.send_message(tg_admin_id, message)
-    except Exception as e:
-        print(f"Ошибка при отправке сообщения админу {tg_admin_id}: {e}")
-
-
 # Функция для запуска бота
 async def start_bot():
     await bot.delete_webhook(drop_pending_updates=True)
