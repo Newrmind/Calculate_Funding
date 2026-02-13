@@ -17,18 +17,6 @@ def init():
     db_creator.create_table_requests_time()
     db_creator.create_users_table()
 
-def test_connectiton():
-    print("[INFO] Тестовый запрос данных с MOEX.", flush=True)
-    from Funding.moex_data_request import get_prevsettlerprice, get_moex_swaprate
-
-    print("[INFO] Запрос prevsettlerprice.", flush=True)
-    usd = get_prevsettlerprice()
-    print(usd, flush=True)
-
-    print("[INFO] Запрос swaprate.", flush=True)
-    swaprate = get_moex_swaprate()
-    print(swaprate, flush=True)
-
 
 async def main_loop():
     print("[INFO] Запуск функции main_loop()", flush=True)
@@ -98,7 +86,6 @@ async def main_loop():
                         any_funding_sent = False
                         print("[INFO] Отправка сообщений с фандингом.", flush=True)
                         funding_message_union = ""
-                        print("[DEBUG] Перед входом в цикл фандинга", flush=True)
                         print(f"[DEBUG] data_storage keys: {list(data_storage._storage.keys())}", flush=True)
                         print(f"[DEBUG] data_storage content: {data_storage._storage}", flush=True)
                         for ticker in tickers:
@@ -114,7 +101,7 @@ async def main_loop():
                                 continue
 
                             avg_price_actual = is_time_in_range(data['timestamp'], start=(15, 30), end=(23, 59))
-                            print(f"[DEBUG] avg_price_actual: {avg_price_actual}.")
+
                             if not avg_price_actual:
                                 warning_msg = f"[WARNING] Нет средневзвешенной цены, рассчитанной после 15:30."
                                 print(warning_msg)
@@ -154,6 +141,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    test_connectiton()
     init()
     asyncio.run(main())  # Запуск основной функции
