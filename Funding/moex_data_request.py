@@ -66,7 +66,8 @@ def get_moex_swaprate():
             retries -= 1
 
 if __name__ == "__main__":
-    # usd = get_prevsettlerprice()
+    usd = get_prevsettlerprice()
     swaprate = get_moex_swaprate()
+    print(usd)
     print(swaprate)
 

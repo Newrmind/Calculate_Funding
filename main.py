@@ -17,6 +17,18 @@ def init():
     db_creator.create_table_requests_time()
     db_creator.create_users_table()
 
+def test_connectiton():
+    print("[INFO] Тестовый запрос данных с MOEX.")
+    from Funding.moex_data_request import get_prevsettlerprice, get_moex_swaprate
+
+    print("[INFO] Запрос prevsettlerprice.")
+    usd = get_prevsettlerprice()
+    print(usd)
+
+    print("[INFO] Запрос swaprate.")
+    swaprate = get_moex_swaprate()
+    print(swaprate)
+
 
 async def main_loop():
     print("[INFO] Запуск функции main_loop()", flush=True)
@@ -140,6 +152,8 @@ async def main():
 
     await asyncio.gather(bot_task, loop_task)
 
+
 if __name__ == "__main__":
+    test_connectiton()
     init()
     asyncio.run(main())  # Запуск основной функции
