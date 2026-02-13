@@ -18,16 +18,16 @@ def init():
     db_creator.create_users_table()
 
 def test_connectiton():
-    print("[INFO] Тестовый запрос данных с MOEX.")
+    print("[INFO] Тестовый запрос данных с MOEX.", flush=True)
     from Funding.moex_data_request import get_prevsettlerprice, get_moex_swaprate
 
-    print("[INFO] Запрос prevsettlerprice.")
+    print("[INFO] Запрос prevsettlerprice.", flush=True)
     usd = get_prevsettlerprice()
-    print(usd)
+    print(usd, flush=True)
 
-    print("[INFO] Запрос swaprate.")
+    print("[INFO] Запрос swaprate.", flush=True)
     swaprate = get_moex_swaprate()
-    print(swaprate)
+    print(swaprate, flush=True)
 
 
 async def main_loop():
