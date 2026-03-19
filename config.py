@@ -14,7 +14,7 @@ class Config:
 
     futures_params = {"USDRUBF": ["USD_RUB", 0.001, 0.0015], "EURRUBF": ["EUR_RUB", 0.001, 0.0015]}  # {"Тикер": ["Тикер_спота", K1, K2]}
 
-    CNY_RUB_FIXME = 11.31
+    CNY_RUB_FIXME = 12.35
     USD_CNY_FIXME = None
 
-    EXPIRE_DATE = {'Y': 2025, 'M': 12, 'D': 18}
+    EXPIRE_DATE = {'Y': 2026, 'M': 6, 'D': 18} # Установлена дата для фьючей 06.26
